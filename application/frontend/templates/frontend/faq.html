@@ -1,0 +1,29 @@
+{% extends 'frontend/base.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="row profile-page">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body container">
+                    <h4 class="card-title">{% trans "Search Syntax" %}</h4>
+                    <p class="card-description">{% trans "W12scan provides powerful search syntax, and you can get all the information you want by combining queries. You can also use spaces to combine search data." %}</p>
+                    <ul>
+                        <li>title=“abc” # {% trans "Search from the title" %}</li>
+                        <li>header=“abc” # {% trans "Search from http header" %}</li>
+                        <li>body=“123” # {% trans "Search from body text" %}</li>
+                        <li>url = “*.baidu.com” # {% trans "Search for subdomains of baidu.com" %}</li>
+                        <li>ip = ‘1.1.1.1’ # {% trans "Search from IP,support" %}<code>'192.168.1.0/24'</code>{% trans "and" %}<code>'192.168.1.*'</code>
+                        </li>
+                        <li>port = ‘80’ # {% trans "Search form port" %}</li>
+                        <li>app = ’nginx’ # {% trans "Search application" %}</li>
+                        <li>country = ‘cn’ # {% trans "Search from country" %}</li>
+                        <li>service = ‘mysql’ # {% trans "Search from service" %}</li>
+                        <li>bug = 'xx' # {% trans "Search from Vulnerability" %}</li>
+                    </ul>
+                    <p class="card-description">
+                        {% trans "It should be noted that the content after the equal sign needs to be wrapped in single or double quotes. These query commands can be combined together and separated by spaces. If the statement you are querying contains single or double quotes, you need to use a backslash <code>\</code>To escape them." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

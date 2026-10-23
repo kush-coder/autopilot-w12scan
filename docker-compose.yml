@@ -1,0 +1,37 @@
+version: '2'
+services:
+
+  web:
+    build: .
+    ports:
+     - "8000:8000"
+    environment:
+      ELASTICSEARCH_HOSTS: elasticsearch:9200
+      REDIS_HOST: redis:6379
+    depends_on:
+      - redis
+      - elasticsearch
+    volumes:
+      - ~/w12scan-data/db:/opt/w12scan/db
+  client:
+    image: boyhack/w12scan-client:latest
+    environment:
+      WEB_INTERFACE: http://web:8000
+      REDIS_HOST: redis:6379
+      NODE_NAME: "w12scan_w8ay"
+    depends_on:
+      - web
+  redis:
+    image: redis:5.0.3-stretch
+    restart: always
+    expose:
+      - "6379"
+  elasticsearch:
+    image: elasticsearch:5.6-alpine
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+    expose:
+      - "9200"
+    volumes:
+      - ~/w12scan-data/data:/usr/share/elasticsearch/data

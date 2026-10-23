@@ -1,0 +1,196 @@
+{% extends 'frontend/base.html' %}
+{% load app_icon %}
+{% load i18n %}
+{% block content %}
+    <div class="row profile-page">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body ipdetail">
+                    <h3 class="card-title">{% trans "Asset detail" %} - {{ model.name }}</h3>
+                    <ul class="list-ticked">
+                        <li>{% trans "Asset name" %}: {{ model.descript }}</li>
+                        <li>{% trans "Time" %}: {{ model.add_time }}</li>
+                        <li>{% trans "Domain" %}: {{ domains | length }}</li>
+                        <li>{% trans "IP" %}: {{ ips | length }}</li>
+                    </ul>
+                    <div class="profile-body">
+                        <ul class="nav tab-switch" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="user-profile-info-tab" data-toggle="pill"
+                                   href="#user-profile-info" role="tab" aria-controls="user-profile-info"
+                                   aria-selected="true">{% trans "Information statistics" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="user-profile-activity-tab" data-toggle="pill"
+                                   href="#user-profile-activity" role="tab" aria-controls="user-profile-activity"
+                                   aria-selected="false">{% trans "Domain" %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="user-profile-info2-tab" data-toggle="pill"
+                                   href="#user-profile-info2" role="tab" aria-controls="user-profile-info2"
+                                   aria-selected="false">{% trans "IP" %}</a>
+                            </li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-content tab-body" id="profile-log-switch">
+                                    <div class="tab-pane fade pr-3 active show" id="user-profile-info" role="tabpanel"
+                                         aria-labelledby="user-profile-info-tab">
+                                        <div class="row mt-4 pb-5 border-bottom">
+                                            <div class="col-8">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{% trans "Domain range" %}</td>
+                                                        <td>
+                                                            <ul>
+                                                                {% for data in show_data.domains %}
+                                                                    <li>{{ data }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{% trans "IP range" %}</td>
+                                                        <td>
+                                                            <ul>
+                                                                {% for data in show_data.ips %}
+                                                                    <li>{{ data }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 mt-5">
+                                                <p><h4>{% trans "Technology" %}</h4></p>
+                                                <p>
+                                                    {% for app in apps %}
+
+                                                        {{ app|app_icon|safe }}
+
+                                                    {% endfor %}
+
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    <br />
+                                        <div class="col-12">
+                                            <h4 class="card-title">{% trans "Service statistics" %}</h4>
+                                            <canvas id="pieChart"></canvas>
+                                        </div>
+
+                                    </div>
+                                    <div class="tab-pane fade" id="user-profile-activity" role="tabpanel"
+                                         aria-labelledby="user-profile-activity-tab">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>
+                                                        {% trans "Domain" %}
+                                                    </th>
+                                                    <th>
+                                                        {% trans "IP" %}
+                                                    </th>
+                                                    <th>
+                                                        {% trans "Title" %}
+                                                    </th>
+                                                    <th>
+                                                        {% trans "Technology" %}
+                                                    </th>
+                                                    <th>
+                                                        {% trans "Info" %}
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for data in domains %}
+                                                    <tr>
+                                                        <td><a href="{% url 'detail' data.id %}">{{ data.url }}</a>
+                                                        </td>
+                                                        <td>
+                                                            {{ data.ip }}
+                                                        </td>
+                                                        <td>
+                                                            {{ data.title }}
+                                                        </td>
+                                                        <td>
+                                                            {% for app in data.app %}
+
+                                                                {{ app|app_icon|safe }}
+
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>
+                                                            {% if data.bugs %}
+                                                                <div class="badge badge-danger">{% trans "warning" %}</div>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="user-profile-info2" role="tabpanel">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>
+                                                        ip
+                                                    </th>
+                                                    <th>
+                                                        {% trans "Port" %}
+                                                    </th>
+                                                    <th>{% trans "Info" %}</th>
+
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for data in ips %}
+                                                    <tr>
+                                                        <td><a href="{% url 'detail' data.id %}">{{ data.target }}</a>
+                                                        </td>
+                                                        <td>
+                                                            {% for info in data.infos %}
+                                                                <div class="badge badge-primary">{{ info.port }}/{{ info.name|default:"unknown" }}</div>
+                                                            {% endfor %}
+                                                        </td>
+
+                                                        <td>
+                                                            {% if data.bugs %}
+                                                                <div class="badge badge-danger">{% trans "warning" %}</div>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var pie_labels = {{ data_pie.labels | safe}};
+        var pip_data = {{ data_pie.data }};
+    </script>
+{% endblock %}
+{% block extrascript %}
+    <script src="/static/js/form-addons.js"></script>
+    <script src="/static/js/my.js"></script>
+{% endblock %}
